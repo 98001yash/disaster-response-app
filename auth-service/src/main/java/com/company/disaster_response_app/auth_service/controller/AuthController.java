@@ -1,6 +1,7 @@
 package com.company.disaster_response_app.auth_service.controller;
 
 
+import com.company.disaster_response_app.auth_service.dtos.LoginRequestDto;
 import com.company.disaster_response_app.auth_service.dtos.SignupRequestDto;
 import com.company.disaster_response_app.auth_service.dtos.UserDto;
 import com.company.disaster_response_app.auth_service.entity.User;
@@ -25,5 +26,11 @@ public class AuthController {
     public ResponseEntity<UserDto> signup(@RequestBody SignupRequestDto signupRequestDto) {
         UserDto createdUser = authService.signup(signupRequestDto);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto) {
+        String token = authService.login(loginRequestDto);
+        return ResponseEntity.ok(token);
     }
 }
