@@ -1,6 +1,5 @@
 package com.company.disaster_response_app.auth_service.service;
 
-
 import com.company.disaster_response_app.auth_service.dtos.LoginRequestDto;
 import com.company.disaster_response_app.auth_service.dtos.SignupRequestDto;
 import com.company.disaster_response_app.auth_service.dtos.UserDto;
@@ -24,27 +23,32 @@ public class AuthService {
     private final ModelMapper modelMapper;
     private final JwtService jwtService;
 
-
-    public User signup(SignupRequestDto signupRequestDto){
-        if(userRepository.existsByEmail(signupRequestDto.getEmail())){
+    public UserDto signup(SignupRequestDto signupRequestDto) {
+        if (userRepository.existsByEmail(signupRequestDto.getEmail())) {
             throw new BadRequestException("User already exists");
         }
 
-        User user = User.builder()
-                .fullName(signupRequestDto.getFullName())
-                .email(signupRequestDto.getEmail())
-                .password(PasswordUtils.hashPassword(signupRequestDto.getPassword()))
-                .role(Role.INDIVIDUAL)
-                .build();
+        // Map request → entity
+        User user = modelMapper.map(signupRequestDto, User.class);
+
+        // Secure password + set role
+        user.setPassword(PasswordUtils.hashPassword(signupRequestDto.getPassword()));
+        user.setRole(Role.INDIVIDUAL);
+
+        // Save
         User savedUser = userRepository.save(user);
-        return savedUser;
+
+        // Map entity → DTO (no password exposed)
+        return modelMapper.map(savedUser, UserDto.class);
     }
 
-    public String login(LoginRequestDto loginRequestDto){
+    public String login(LoginRequestDto loginRequestDto) {
         User user = userRepository.findByEmail(loginRequestDto.getEmail())
-                .orElseThrow(()->new ResourceNotFoundException("User not found with email: "+loginRequestDto.getEmail()));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found with email: " + loginRequestDto.getEmail())
+                );
 
-        if(!PasswordUtils.checkPassword(loginRequestDto.getPassword(), user.getPassword())) {
+        if (!PasswordUtils.checkPassword(loginRequestDto.getPassword(), user.getPassword())) {
             throw new BadRequestException("Incorrect password");
         }
 

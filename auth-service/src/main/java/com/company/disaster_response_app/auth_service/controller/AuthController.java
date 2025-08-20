@@ -2,7 +2,6 @@ package com.company.disaster_response_app.auth_service.controller;
 
 
 import com.company.disaster_response_app.auth_service.dtos.SignupRequestDto;
-import com.company.disaster_response_app.auth_service.dtos.UserDto;
 import com.company.disaster_response_app.auth_service.entity.User;
 import com.company.disaster_response_app.auth_service.service.AuthService;
 import lombok.RequiredArgsConstructor;
