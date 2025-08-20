@@ -1,11 +1,13 @@
 package com.company.disaster_response_app.auth_service.service;
 
 
+import com.company.disaster_response_app.auth_service.dtos.LoginRequestDto;
 import com.company.disaster_response_app.auth_service.dtos.SignupRequestDto;
 import com.company.disaster_response_app.auth_service.dtos.UserDto;
 import com.company.disaster_response_app.auth_service.entity.User;
 import com.company.disaster_response_app.auth_service.enums.Role;
 import com.company.disaster_response_app.auth_service.exceptions.BadRequestException;
+import com.company.disaster_response_app.auth_service.exceptions.ResourceNotFoundException;
 import com.company.disaster_response_app.auth_service.repository.UserRepository;
 import com.company.disaster_response_app.auth_service.utils.PasswordUtils;
 import lombok.RequiredArgsConstructor;
@@ -36,5 +38,16 @@ public class AuthService {
                 .build();
         User savedUser = userRepository.save(user);
         return savedUser;
+    }
+
+    public String login(LoginRequestDto loginRequestDto){
+        User user = userRepository.findByEmail(loginRequestDto.getEmail())
+                .orElseThrow(()->new ResourceNotFoundException("User not found with email: "+loginRequestDto.getEmail()));
+
+        if(!PasswordUtils.checkPassword(loginRequestDto.getPassword(), user.getPassword())) {
+            throw new BadRequestException("Incorrect password");
+        }
+
+        return jwtService.generateAccessToken(user);
     }
 }
