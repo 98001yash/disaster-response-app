@@ -2,6 +2,7 @@ package com.company.disaster_response_app.auth_service.controller;
 
 
 import com.company.disaster_response_app.auth_service.dtos.SignupRequestDto;
+import com.company.disaster_response_app.auth_service.dtos.UserDto;
 import com.company.disaster_response_app.auth_service.entity.User;
 import com.company.disaster_response_app.auth_service.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,8 @@ public class AuthController {
 
 
     @PostMapping("/signup")
-    public ResponseEntity<User> signup(@RequestBody SignupRequestDto signupRequestDto) {
-        User createdUser = authService.signup(signupRequestDto);
+    public ResponseEntity<UserDto> signup(@RequestBody SignupRequestDto signupRequestDto) {
+        UserDto createdUser = authService.signup(signupRequestDto);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 }
