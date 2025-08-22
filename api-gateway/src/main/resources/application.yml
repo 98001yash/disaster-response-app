@@ -34,6 +34,13 @@ spring:
             - name: AuthenticationFilter
 
 
+        - id: disaster-reporting-service
+          uri: lb://disaster-reporting-service
+          predicates:
+            - Path=/report/**
+          filters:
+            - name: AuthenticationFilter
+
 
 
 
