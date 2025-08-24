@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 public class AppConfig {
 
 
+
+    // ModelMapper configuration for the entity to DTOs conversion
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
